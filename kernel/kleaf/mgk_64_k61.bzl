@@ -358,7 +358,6 @@ mgk_64_k61_device_modules = [
     "drivers/misc/mediatek/monitor_hang/monitor_hang.ko",
     "drivers/misc/mediatek/mtk-interconnect/mtk-icc-core.ko",
     "drivers/misc/mediatek/mtprintk/mtk_printk_ctrl.ko",
-    "drivers/misc/mediatek/mtprof/bootprof.ko",
     "drivers/misc/mediatek/nfc/st21nfc/st21nfc.ko",
     "drivers/misc/mediatek/nfc/st54spi.ko",
     "drivers/misc/mediatek/pbm/mtk_pbm.ko",
