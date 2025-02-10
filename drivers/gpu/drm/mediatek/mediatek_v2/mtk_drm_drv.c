@@ -7763,7 +7763,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
 	}
 
 	DDPINFO("%s+\n", __func__);
-
+	private->is_dual_disp = false;
 	pdev = of_find_device_by_node(private->mutex_node);
 	if (!pdev) {
 		dev_err(drm->dev, "Waiting for disp-mutex device %s\n",
@@ -7847,6 +7847,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
 			DDPMSG("CRTC3 Path\n");
 			if (of_property_read_bool(private->mmsys_dev->of_node,
 				"enable-secondary-path")) {
+				private->is_dual_disp = true;
 				if (!private->enable_dual_disp_dynamic_ovl)
 					ret = mtk_drm_crtc_create(drm,
 						private->data->fourth_path_data_secondary);

@@ -253,6 +253,7 @@ struct mtk_drm_private {
 
 	bool need_cwb_path_disconnect;
 	bool cwb_is_preempted;
+	bool is_dual_disp;
 
 	bool dma_parms_allocated;
 

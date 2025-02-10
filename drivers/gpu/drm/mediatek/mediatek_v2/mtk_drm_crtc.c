@@ -14501,8 +14501,18 @@ void mtk_drm_crtc_plane_update(struct drm_crtc *crtc, struct drm_plane *plane,
 		DISP_SLOT_SUBTRACTOR_WHEN_FREE(mtk_get_plane_slot_idx(mtk_crtc, plane_index)));
 	cmdq_pkt_write(cmdq_handle, mtk_crtc->gce_obj.base, addr, sub, ~0);
 #endif
-	if (plane_index == 0)
+	if (plane_index == 0 && priv->data->mmsys_id != MMSYS_MT6878){
 		mtk_crtc->is_plane0_updated = true;
+		return ;
+	} else if(priv->data->mmsys_id == MMSYS_MT6878){
+		if(plane_index == 0 && !priv->is_dual_disp){
+			mtk_crtc->is_plane0_updated = true;
+			return ;
+		} else if(plane_index == 1 && priv->is_dual_disp){
+			mtk_crtc->is_plane0_updated = true;
+			return ;
+		}
+	}
 }
 
 static void mtk_crtc_wb_comp_config(struct drm_crtc *crtc,
