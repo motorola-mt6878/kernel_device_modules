@@ -299,6 +299,39 @@ void fg_daemon_send_data(struct mtk_battery *gm,
 			}
 		}
 		break;
+	case FG_DAEMON_CMD_SEND_DYNAMIC_DATA:
+		{
+			char *ptr;
+			int buffer[sizeof(struct dynamic_data)];
+
+			if (sizeof(struct dynamic_data)
+				!= prcv->total_size) {
+				bm_err("%s size is different %d %d\n",
+				__func__,
+				(int)sizeof(
+				struct dynamic_data),
+				prcv->total_size);
+			} else {
+				if ((prcv->idx + prcv->size) >
+					sizeof(struct dynamic_data)) {
+					bm_err("size is different %d size %d idx %d\n",
+						(int)sizeof(struct dynamic_data),
+						prcv->size, prcv->idx);
+					return;
+				}
+
+				ptr = (char *)buffer;
+				memcpy(&ptr[prcv->idx],
+					prcv->input,
+					prcv->size);
+				memcpy(&gm->dynamic_data_rcv,
+					prcv->input,
+					prcv->size);
+				bm_err("FG_DAEMON_CMD_SEND_DYNAMIC_DATA vbat [%d %d] [%d %d] [%d %d]\n",
+					buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
+			}
+		}
+		break;
 	default:
 		bm_err("%s bad cmd 0x%x\n",
 			__func__, cmd);
@@ -398,6 +431,41 @@ void fg_daemon_get_data(int cmd,
 			bm_trace(
 				"FG_DATA_TYPE_TABLE type:%d size:%d %d idx:%d\n",
 				FG_DAEMON_CMD_GET_CUSTOM_TABLE,
+				prcv->total_size,
+				prcv->size,
+				prcv->idx);
+		}
+		break;
+	case FG_DAEMON_CMD_GET_DYNAMIC_DATA:
+		{
+			char *ptr;
+
+			if (prcv->idx + prcv->size >
+				sizeof(struct dynamic_data)) {
+				bm_err("%s size is different %d %d %d\n",
+				__func__,
+				(int)sizeof(
+				struct dynamic_data),
+				prcv->idx, prcv->size);
+				return;
+			}
+
+			if (sizeof(struct dynamic_data)
+				!= prcv->total_size) {
+				bm_err("%s size is different %d %d\n",
+				__func__,
+				(int)sizeof(
+				struct dynamic_data),
+				prcv->total_size);
+			}
+
+			ptr = (char *)&gm->dynamic_data;
+
+			memcpy(pret->input, &ptr[prcv->idx],
+				pret->size);
+			bm_trace(
+				"FG_DATA_TYPE_TABLE type:%d size:%d %d idx:%d\n",
+				FG_DAEMON_CMD_GET_DYNAMIC_DATA,
 				prcv->total_size,
 				prcv->size,
 				prcv->idx);
@@ -1781,6 +1849,47 @@ void exec_BAT_EC(int cmd, int param)
 				reg_type_name, cmd, regmap_type);
 		}
 		break;
+	case 808:
+		{
+			int val = 43500 - param;
+
+			gm->dynamic_data.dynamic_cv_flag = 1;
+			gm->dynamic_data.dynamic_cv_voltage = val;
+			wakeup_fg_algo_cmd(gm, FG_INTR_DYNAMIC,
+					0, 0);
+
+			bm_err("exe_BAT_EC cmd %d. set dynamic cv %d 43500 %d\n",
+				cmd, val, param);
+		}
+		break;
+	case 809:
+		{
+			int val = param;
+
+			gm->dynamic_data.dynamic_gauge0_flag = 1;
+			gm->dynamic_data.dynamic_gauge0_voltage = val;
+			wakeup_fg_algo_cmd(gm, FG_INTR_DYNAMIC,
+					0, 0);
+
+			bm_err("exe_BAT_EC cmd %d. set dynamic gauge0 %d\n",
+				cmd, val);
+		}
+		break;
+	case 810:
+		{
+			int val = param;
+
+			gm->dynamic_data.dynamic_zcv_flag = 1;
+			gm->dynamic_data.dynamic_zcv_cycle = val;
+			reload_battery_zcv_table(gm, val);
+			wakeup_fg_algo_cmd(gm, FG_INTR_DYNAMIC,
+					0, 0);
+
+			bm_err("exe_BAT_EC cmd %d. set dynamic ZCV TABLE %d\n",
+				cmd, val);
+		}
+		break;
+
 	default:
 		bm_err(
 			"exe_BAT_EC cmd %d, param %d, default\n",
@@ -3825,6 +3934,11 @@ static void mtk_battery_daemon_handler(struct mtk_battery *gm, void *nl_data,
 		bm_err("%s", &msg->fgd_data[0]);
 	}
 	break;
+	case FG_DAEMON_CMD_SEND_DYNAMIC_DATA:
+	{
+		bm_err("[K]FG_DAEMON_CMD_SEND_DYNAMIC_DATA\n");
+	}
+	fallthrough;
 	case FG_DAEMON_CMD_SEND_VERSION_CONTROL:
 	{
 		bm_err("[K]FG_DAEMON_CMD_SEND_VERSION_CONTROL\n");
@@ -3934,6 +4048,15 @@ static void mtk_battery_daemon_handler(struct mtk_battery *gm, void *nl_data,
 		gm->is_reset_aging_factor = 0;
 		bm_debug("[K]FG_DAEMON_CMD_GET_IS_AGING_RESET %d %d\n",
 			reset, gm->is_reset_aging_factor);
+	}
+	break;
+	case FG_DAEMON_CMD_SET_SELECT_ZCV:
+	{
+
+		memcpy(&int_value, &msg->fgd_data[0], sizeof(int_value));
+		reload_battery_zcv_table(gm, int_value);
+		bm_debug("FG_DAEMON_CMD_SET_SELECT_ZCV %d\n",
+			int_value);
 	}
 	break;
 	case FG_DAEMON_CMD_SET_SOC:
@@ -4210,6 +4333,16 @@ static void mtk_battery_daemon_handler(struct mtk_battery *gm, void *nl_data,
 		memcpy(ret_msg->fgd_data,
 			&gm->bh_data, sizeof(struct ag_center_data_st));
 
+	}
+	break;
+	case FG_DAEMON_CMD_GET_DYNAMIC_DATA:
+	{
+		bm_debug("FG_DAEMON_CMD_GET_DYNAMIC_DATA\n");
+
+		fg_daemon_get_data(msg->fgd_cmd, &msg->fgd_data[0],
+			&ret_msg->fgd_data[0]);
+		ret_msg->fgd_data_len =
+			sizeof(struct fgd_cmd_param_t_4);
 	}
 	break;
 
