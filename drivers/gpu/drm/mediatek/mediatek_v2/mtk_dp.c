@@ -4039,14 +4039,13 @@ void mtk_dp_HPDInterruptSet(int bstatus)
 	DPTXMSG("%s, status:%d[2:DISCONNECT, 4:CONNECT, 8:IRQ] Power:%d, uevent=%d\n",
 		__func__, bstatus, g_mtk_dp->bPowerOn, g_mtk_dp->bUeventToHwc);
 
-	// delay to prevent from slow connecting
-	msleep(500);
-
 	if ((bstatus == HPD_CONNECT && !g_mtk_dp->bPowerOn)
 		|| (bstatus == HPD_DISCONNECT && g_mtk_dp->bPowerOn)
 		|| (bstatus == HPD_INT_EVNET && g_mtk_dp->bPowerOn)) {
 
 		if (bstatus == HPD_CONNECT) {
+			// delay to prevent from slow connecting
+			msleep(500);
 			if (g_mtk_dp->priv->data->mmsys_id == MMSYS_MT6989) {
 				if (g_mtk_dp->priv->dpc_dev) {
 					/* get mminfra before DPTX on */
