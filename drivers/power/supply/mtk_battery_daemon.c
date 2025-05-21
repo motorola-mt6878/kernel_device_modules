@@ -5340,15 +5340,17 @@ void enable_bat_temp_det(bool en)
 static int mtk_battery_suspend(struct mtk_battery *gm, pm_message_t state)
 {
 	int version;
+	gm->suspend_resume_flag = 0;
 
-	bm_debug("******** %s!! iavg=%d ***GM3 disable:%d %d %d %d tmp_intr:%d***\n",
+	bm_debug("******** %s!! iavg=%d ***GM3 disable:%d %d %d %d tmp_intr:%d suspend_resume_flag:%d***\n",
 		__func__,
 		gm->gauge->hw_status.iavg_intr_flag,
 		gm->disableGM30,
 		gm->fg_cust_data.disable_nafg,
 		gm->ntc_disable_nafg,
 		gm->cmd_disable_nafg,
-		gm->enable_tmp_intr_suspend);
+		gm->enable_tmp_intr_suspend,
+		gm->suspend_resume_flag);
 
 	if (gm->enable_tmp_intr_suspend == 0) {
 		gauge_set_property(GAUGE_PROP_EN_BAT_TMP_LT, 0);
@@ -5370,14 +5372,16 @@ static int mtk_battery_suspend(struct mtk_battery *gm, pm_message_t state)
 static int mtk_battery_resume(struct mtk_battery *gm)
 {
 	int version;
+	gm->suspend_resume_flag = 1;
 
-	bm_debug("******** %s!! iavg=%d ***GM3 disable:%d %d %d %d***\n",
+	bm_debug("******** %s!! iavg=%d ***GM3 disable:%d %d %d %d suspend_resume_flag:%d***\n",
 		__func__,
 		gm->gauge->hw_status.iavg_intr_flag,
 		gm->disableGM30,
 		gm->fg_cust_data.disable_nafg,
 		gm->ntc_disable_nafg,
-		gm->cmd_disable_nafg);
+		gm->cmd_disable_nafg,
+		gm->suspend_resume_flag);
 
 	version = gauge_get_int_property(GAUGE_PROP_HW_VERSION);
 	if (version >=
@@ -5491,6 +5495,8 @@ int mtk_battery_daemon_init(struct platform_device *pdev)
 
 	gauge = dev_get_drvdata(&pdev->dev);
 	gm = gauge->gm;
+
+	gm->suspend_resume_flag = 1;
 
 	if (is_daemon_support(gm) == false)
 		return -EIO;

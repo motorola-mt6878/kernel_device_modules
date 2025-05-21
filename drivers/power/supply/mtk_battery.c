@@ -4325,7 +4325,13 @@ static void power_misc_handler(void *arg)
 	ktime_t ktime, time_now;
 	int secs = 0;
 
-	secs = shutdown_event_handler(gm);
+	if(gm->suspend_resume_flag) {
+		secs = shutdown_event_handler(gm);
+	}
+
+	bm_debug("%s:suspend_resume_flag:%d\n",
+			__func__, gm->suspend_resume_flag);
+
 	if (secs != 0 && gm->disableGM30 == false) {
 		time_now  = ktime_get_boottime();
 		tmp_time_now  = ktime_to_timespec64(time_now);

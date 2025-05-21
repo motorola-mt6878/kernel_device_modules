@@ -1214,6 +1214,7 @@ struct mtk_battery {
 	struct dynamic_data dynamic_data_rcv;
 	unsigned long manufacturing_date;
 	unsigned long first_usage_date;
+	int suspend_resume_flag;
 
 	/*custom gauge0 config*/
 	int en_dynamic_gauge0_by_cycle;
