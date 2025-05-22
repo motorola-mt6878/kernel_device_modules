@@ -571,6 +571,36 @@
 	vbus-current = <1300000>;
 };
 
+&cpu_power_throttling {
+	lbat-limit-freq-lv2 = < 1800000  1800000 1800000>;
+	lbat-limit-freq-lv3 = < 1200000  1200000 1200000>;
+};
+
+&gpu_power_throttling {
+	lbat-limit-freq = <1200000 700000 600000>;
+};
+
+&low_battery_throttling {
+	thd-volts-l = <
+		3209    3116    3011
+		3910    3490    3331
+		4359    3827    3623>;
+	thd-volts-h = <
+		3309    3209    3116
+		4010    3910    3490
+		4459    4359    3827>;
+	lvsys-thd-volt-l = <3011>;
+	lvsys-thd-volt-h = <3116>;
+};
+
+&bp_thl {
+	soc-max-stage = <3>;
+};
+
+&mt6375_batoc_throttle {
+	status = "disabled";
+};
+
 &mt6363_dynamic_loading_throttling {
 	status = "okay";
 	bob-check-flag = <0>;
