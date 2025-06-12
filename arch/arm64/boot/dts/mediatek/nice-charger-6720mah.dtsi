@@ -594,7 +594,7 @@
 };
 
 &bp_thl {
-	soc-max-stage = <3>;
+	soc-limit-threshold = <3>;
 };
 
 &mt6375_batoc_throttle {
