@@ -18,14 +18,13 @@
 
 #define NICE_INDIA_RADIO 4
 #define NICE_INDSA_RADIO 9
-#define NICE_VIEAM_RADIO 10
 /* Board match root node */
 / {
 	fragment@model {
 		target-path = "/";
 		__overlay__ {
 			mot,model = "nice";
-			mot,board-id = <(NICE_INDIA_RADIO << 8 | 0x4B) 0xB100>, <(NICE_INDSA_RADIO << 8 | 0x4B) 0xB100>, <(NICE_VIEAM_RADIO << 8 | 0x4B) 0xB100>;
+			mot,board-id = <(NICE_INDIA_RADIO << 8 | 0x4B) 0xB100>, <(NICE_INDSA_RADIO << 8 | 0x4B) 0xB100>;
 		};
 	};
 };
