@@ -111,6 +111,7 @@ void ccmni_set_init_rps(unsigned long rps_value)
 }
 EXPORT_SYMBOL(ccmni_set_init_rps);
 
+#if IS_ENABLED(CONFIG_MTK_NET_RPS)
 void set_ccmni_rps(unsigned long value)
 {
 	int i = 0;
@@ -124,6 +125,7 @@ void set_ccmni_rps(unsigned long value)
 		set_rps_map(ccmni_ctl_blk->ccmni_inst[i]->dev->_rx, value);
 }
 EXPORT_SYMBOL(set_ccmni_rps);
+#endif
 
 void ccmni_set_cur_speed(u64 cur_dl_speed)
 {
@@ -436,10 +438,12 @@ static int ccmni_open(struct net_device *dev)
 		usage_cnt = atomic_read(&ccmni->usage);
 		atomic_set(&ccmni_tmp->usage, usage_cnt);
 	}
+	#if IS_ENABLED(CONFIG_MTK_NET_RPS)
 	if (g_init_rps_value)
 		set_rps_map(dev->_rx, g_init_rps_value);
 	else
 		set_rps_map(dev->_rx, 0x0F);
+	#endif
 	queue_delayed_work(ccmni->worker,
 				&ccmni->pkt_queue_work,
 				msecs_to_jiffies(500));
