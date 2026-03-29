@@ -25,10 +25,6 @@
 
 #define TCPC_NORMAL_RP_DUTY	(308)		/* 30% */
 
-#ifndef MIN
-#define MIN(a, b)       (((a) < (b)) ? (a) : (b))
-#endif
-
 /* provide to TCPC interface */
 extern int tcpci_report_usb_port_attached(struct tcpc_device *tcpc);
 extern int tcpci_report_usb_port_detached(struct tcpc_device *tcpc);
