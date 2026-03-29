@@ -9,8 +9,6 @@
 #include "port_smem.h"
 
 #define MAX_QUEUE_LENGTH 16
-
-#define Min(a, b) (a < b ? a : b)
 #define MAX_PACKET_SIZE 2555872 /* 2.4375*1024*1024 -32 */
 
 atomic_t udc_status = ATOMIC_INIT(0);
@@ -707,7 +705,7 @@ int udc_kick_handler(struct port_t *port, struct z_stream_s *zcpr,
 	ret = check_cmp_buf(inst_id, max_output_size);
 	if (ret == -CMP_BUF_FULL)
 		return ret;
-	remain_len = Min(max_output_size,
+	remain_len = MIN(max_output_size,
 		max_packet_size - total_comp_size);
 
 	ret = udc_deflate(zcpr, inst_id, req_des->con,

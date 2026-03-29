@@ -49,13 +49,6 @@
 #define COLOR_MODE			(0)	/*color feature off */
 #endif
 
-#ifndef max
-#define max( a, b )            (((a) > (b)) ? (a) : (b))
-#endif
-#ifndef min
-#define min( a, b )            (((a) < (b)) ? (a) : (b))
-#endif
-
 struct pq_module_match {
 	enum mtk_pq_module_type pq_type;
 	enum mtk_ddp_comp_type type;
@@ -640,8 +633,8 @@ int mtk_drm_ioctl_pq_proxy(struct drm_device *dev, void *data, struct drm_file *
 		ksize = usize = in_size = out_size = params->size;
 	else {
 		usize = params->size;
-		in_size = max(ksize, usize);
-		out_size = min(ksize, usize);
+		in_size = MAX(ksize, usize);
+		out_size = MIN(ksize, usize);
 	}
 	if (in_size > PQ_MAX_DATA_SIZE_EXT || out_size > PQ_MAX_DATA_SIZE_EXT) {
 		DDPMSG("%s cmd %d max(%d, %d) is over %d\n", __func__, cmd, ksize, usize, PQ_MAX_DATA_SIZE_EXT);
@@ -801,8 +794,8 @@ int mtk_pq_helper_frame_config(struct drm_crtc *crtc, struct cmdq_pkt *cmdq_hand
 			ksize = usize = in_size = out_size = requests[index].size;
 		else {
 			usize = requests[index].size;
-			in_size = max(ksize, usize);
-			out_size = min(ksize, usize);
+			in_size = MAX(ksize, usize);
+			out_size = MIN(ksize, usize);
 		}
 		if (in_size > PQ_MAX_DATA_SIZE_EXT || out_size > PQ_MAX_DATA_SIZE_EXT) {
 			DDPMSG("%s cmd %d max(%d, %d) is over %d\n", __func__, cmd, ksize, usize, PQ_MAX_DATA_SIZE_EXT);

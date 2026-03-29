@@ -3942,9 +3942,6 @@ static bool mmi_check_vbus_present(struct mtk_charger *info)
 #define PPS_60W 60000
 #define PPS_100W 100000
 #define PD_PMIN_POWER 15000
-#ifndef MAX
-#define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
-#endif
 static int mmi_get_apdo_power(struct mtk_charger *info, bool force)
 {
 	int ret = 0;
