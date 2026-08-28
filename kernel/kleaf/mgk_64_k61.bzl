@@ -842,12 +842,6 @@ def get_overlay_modules_list():
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/misc/utag:utags")
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/mmi_info:mmi_info")
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/mmi_relay:mmi_relay")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_swap:moto_swap")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_sched:moto_sched")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_binder:moto_binder")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_mmap_fault:moto_mmap_fault")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_f_usbnet:moto_f_usbnet")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_netopt/con_dfpar:con_dfpar")
 
     if "aito" in DEFCONFIG_OVERLAYS:
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/misc/awinic/aw86927:aw86927")
@@ -996,8 +990,6 @@ def get_overlay_modules_list():
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/input/misc/goodix_fod_mmi_u:goodix_fod_mmi_u")
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/misc/mmi_stow:mmi_stow")
         mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/input/misc/anc_fps_mmi:anc_fps_mmi")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/mm_iosched:mm_iosched")
-        mgk_64_k61_kleaf_modules.append("//motorola/kernel/modules/drivers/moto_netopt/skb_latency:skb_latency")
 
         mgk_64_k61_device_modules.append("drivers/gpu/drm/panel/dsi-panel-mot-dummy-vdo-60hz.ko")
         mgk_64_k61_device_modules.append("drivers/gpu/drm/panel/dsi-panel-mot-dummy-cmd-60hz.ko")
