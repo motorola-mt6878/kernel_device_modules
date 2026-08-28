@@ -8,11 +8,15 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 RESET="\033[0m"
 
-KERNEL_DIR="$1"
-SRC_DIR="$KERNEL_DIR/out/dist/"
+# Kernel source root (parent of this script's real location via symlink)
+# out/dist/ and prebuilts/ live here
+KERNEL_SRC_DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 
-[ -z "$KERNEL_DIR" ] && { echo "Usage: $0 /path/to/kernel/"; exit 1; }
-[ ! -d "$KERNEL_DIR" ] && { echo "${RED}Invalid KERNEL_DIR:${RESET} $KERNEL_DIR"; exit 1; }
+DEVICE_KERNEL_DIR="$1"
+SRC_DIR="$KERNEL_SRC_DIR/out/dist/"
+
+[ -z "$DEVICE_KERNEL_DIR" ] && { echo "Usage: $0 /path/to/device/vendor/repo-kernel"; exit 1; }
+[ ! -d "$DEVICE_KERNEL_DIR" ] && { echo "${RED}Invalid DEVICE_KERNEL_DIR:${RESET} $DEVICE_KERNEL_DIR"; exit 1; }
 
 # Module load lists and their destination directories
 MODULE_LISTS="
@@ -72,8 +76,8 @@ copy_module() {
     dest="$2"
     found=$(find "$SRC_DIR" -type f -name "$mod" -print -quit)
     if [ -n "$found" ]; then
-        cp "$found" "./$dest/"
-        chmod -x "./$dest/$(basename "$found")"
+        cp "$found" "$DEVICE_KERNEL_DIR/$dest/"
+        chmod -x "$DEVICE_KERNEL_DIR/$dest/$(basename "$found")"
         echo "${GREEN}Copied:${RESET} $mod -> $dest/"
     else
         echo "${RED}Missing:${RESET} $mod"
@@ -84,15 +88,15 @@ copy_module() {
 for entry in $MODULE_LISTS; do
     list_file="${entry%%:*}"
     dest_dir="${entry##*:}"
-    if [ ! -f "$list_file" ]; then
-        echo "${RED}Missing list:${RESET} $list_file"
+    if [ ! -f "$DEVICE_KERNEL_DIR/$list_file" ]; then
+        echo "${RED}Missing list:${RESET} $DEVICE_KERNEL_DIR/$list_file"
         continue
     fi
     while read -r mod; do
         [ -z "$mod" ] && continue
         case "$mod" in \#*) continue ;; esac
         copy_module "$mod" "$dest_dir"
-    done < "$list_file"
+    done < "$DEVICE_KERNEL_DIR/$list_file"
 done
 
 # Copy extra modules to vendor
@@ -102,15 +106,15 @@ done
 
 # Strip symbols
 CLANG_VERISON=clang-r487747c
-find ./vendor ./ramdisk ./system -name '*.ko' \
-    -exec ${KERNEL_DIR}/prebuilts/clang/host/linux-x86/${CLANG_VERISON}/bin/llvm-strip --strip-debug {} +
+find $DEVICE_KERNEL_DIR/vendor $DEVICE_KERNEL_DIR/ramdisk $DEVICE_KERNEL_DIR/system -name '*.ko' \
+    -exec ${KERNEL_SRC_DIR}/prebuilts/clang/host/linux-x86/${CLANG_VERISON}/bin/llvm-strip --strip-debug {} +
 
 # Kernel artifacts
 for artifact in Image.gz; do
     found=$(find "$SRC_DIR" -type f -name "$artifact" -print -quit)
     if [ -n "$found" ]; then
-        cp "$found" ./
-        chmod -x "./$(basename "$found")"
+        cp "$found" "$DEVICE_KERNEL_DIR/"
+        chmod -x "$DEVICE_KERNEL_DIR/$(basename "$found")"
         echo "${GREEN}Copied:${RESET} $(basename "$found")"
     else
         echo "${RED}Missing:${RESET} $artifact"
