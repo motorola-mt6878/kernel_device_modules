@@ -12,7 +12,7 @@ mgk_kmi_symbol_list = "//kernel-6.1:android/abi_gki_aarch64_mtk"
 filegroup(
         name = "mgk_configs",
         srcs = glob([
-            "arch/arm64/configs/*",
+            "arch/arm64/configs/**",
             "kernel/configs/**",
             "**/Kconfig",
             "drivers/cpufreq/Kconfig.*",
