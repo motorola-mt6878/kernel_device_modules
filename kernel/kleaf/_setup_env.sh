@@ -29,7 +29,7 @@ if [ -z ${OUT_DIR} ]
 then
   OUT_DIR=${ROOT_DIR}/out
 fi
-if [ ! -d "${OUT_DIR}" ]; then
+if [ ! -d "${OUT_DIR}" ] && [ "${OUT_DIR:0:1}" != "/" ]; then
   OUT_DIR="${ROOT_DIR}/${OUT_DIR}"
 fi
 
