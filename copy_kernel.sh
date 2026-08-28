@@ -11,8 +11,6 @@ RESET="\033[0m"
 KERNEL_DIR="$1"
 SRC_DIR="$KERNEL_DIR/out/dist/"
 
-SOC="mt6897"
-
 [ -z "$KERNEL_DIR" ] && { echo "Usage: $0 /path/to/kernel/"; exit 1; }
 [ ! -d "$KERNEL_DIR" ] && { echo "${RED}Invalid KERNEL_DIR:${RESET} $KERNEL_DIR"; exit 1; }
 
@@ -77,15 +75,3 @@ for artifact in Image.lz4 kernel-uapi-headers.tar.gz; do
         echo "${RED}Missing:${RESET} $artifact"
     fi
 done
-
-# DTBs
-dtbs=$(find "$SRC_DIR" -type f -name "${SOC}.dtb" -print -quit)
-if [ -n "$dtbs" ]; then
-    for dtb in $dtbs; do
-        cp "$dtb" ./dtb/
-        chmod -x "./dtb/$(basename "$dtb")"
-        echo "${GREEN}Copied:${RESET} $(basename "$dtb")"
-    done
-else
-    echo "${RED}Missing:${RESET} ${SOC}.dtb"
-fi
