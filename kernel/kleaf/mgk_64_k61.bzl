@@ -371,7 +371,6 @@ mgk_64_k61_device_modules = [
     "drivers/misc/mediatek/power_throttling/pmic_lvsys_notify.ko",
     "drivers/misc/mediatek/pwm/mtk-pwm.ko",
     "drivers/misc/mediatek/qos/mtk_qos.ko",
-    "drivers/misc/mediatek/rps/rps_perf.ko",
     "drivers/misc/mediatek/sched/cpufreq_sugov_ext.ko",
     "drivers/misc/mediatek/sched/mtk_core_ctl.ko",
     "drivers/misc/mediatek/sched/scheduler.ko",
