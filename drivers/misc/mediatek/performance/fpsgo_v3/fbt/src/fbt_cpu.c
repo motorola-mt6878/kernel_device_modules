@@ -110,8 +110,6 @@
 #define FPSGO_BAFFINITY_USERDEFINE 6
 #define FPSGO_BAFFINITY_TOTAL 7
 
-
-
 #define SEQ_printf(m, x...)\
 do {\
 	if (m)\

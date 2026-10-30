@@ -21,8 +21,6 @@
 
 /*--------------------------------------------*/
 
-
-
 struct FBT_CPU_CTRL_NOTIFIER_PUSH_TAG {
 	int policy_id;
 	unsigned int freq;

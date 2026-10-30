@@ -134,7 +134,6 @@ static struct nl_rpmb_send_req nl_rpmb_req;
 
 #define RPMB_NAME "rpmb"
 
-
 #define RPMB_IOCTL_PROGRAM_KEY  1
 #define RPMB_IOCTL_WRITE_DATA   3
 #define RPMB_IOCTL_READ_DATA    4

@@ -18,7 +18,6 @@
  ****************************************************************************/
 #define IDD_TBL_DBG
 
-
 #define SWPM_OPS (swpm_m.plat_ops)
 
 #define swpm_lock(lock)		mutex_lock(lock)
